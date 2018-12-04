@@ -4,7 +4,7 @@
   "description": "Shins Is Not Slate",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node ./shins.js"
   },
   "bin": {
     "shins": "./shins.js"
@@ -43,7 +43,8 @@
     "opn": "^5.2.0",
     "sanitize-html": "^1.15.0",
     "tiny-opts-parser": "0.0.3",
-    "uglify-js": "^2.7.4"
+    "uglify-js": "^2.7.4",
+    "widdershins": "^3.6.6"
   },
   "devDependencies": {
     "ejs-lint": "^0.2.0",

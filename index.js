@@ -35,9 +35,9 @@ const sanitizeHtml = require('sanitize-html');
 
 let globalOptions = {};
 
-function safeReadFileSync(filename,encoding) {
+function safeReadFileSync(filename, encoding) {
     try {
-        return fs.readFileSync(filename,encoding);
+        return fs.readFileSync(filename, encoding);
     }
     catch (ex) {
         console.error(`shins: included file ${filename} not found`);
@@ -66,7 +66,7 @@ function javascript_include_tag(include) {
         }
         var bundle = uglify.minify(scripts);
         if (globalOptions.inline) {
-            includeStr = '<script>'+bundle.code+'</script>';
+            includeStr = '<script>' + bundle.code + '</script>';
         }
         else {
             fs.writeFileSync(path.join(__dirname, '/pub/js/shins.js'), bundle.code, 'utf8');
@@ -103,7 +103,7 @@ function stylesheet_link_tag(stylesheet, media) {
             stylePath = path.join(hlpath, '/styles/' + stylesheet + '.css');
         }
         var styleContent = safeReadFileSync(stylePath, "utf8");
-        styleContent = replaceAll(styleContent, '../../source/fonts/', globalOptions.fonturl||'https://raw.githubusercontent.com/Mermade/shins/master/source/fonts/');
+        styleContent = replaceAll(styleContent, '../../source/fonts/', globalOptions.fonturl || 'https://raw.githubusercontent.com/Mermade/shins/master/source/fonts/');
         styleContent = replaceAll(styleContent, '../../source/', 'source/');
         if (globalOptions.customCss) {
             let overrideFilename = path.join(__dirname, '/pub/css/' + override + '_overrides.css');
@@ -116,7 +116,7 @@ function stylesheet_link_tag(stylesheet, media) {
                 styleContent += '\n' + safeReadFileSync(globalOptions.css, 'utf8');
             }
         }
-        return '<style media="'+media+'">'+styleContent+'</style>';
+        return '<style media="' + media + '">' + styleContent + '</style>';
     }
     else {
         if (media == 'screen') {
@@ -150,22 +150,22 @@ function language_array(language_tabs) {
     return JSON.stringify(result).split('"').join('&quot;');
 }
 
-function preProcess(content,options) {
+function preProcess(content, options) {
     let lines = content.split('\r').join('').split('\n');
-    for (let l=0;l<lines.length;l++) {
+    for (let l = 0; l < lines.length; l++) {
         let line = lines[l];
         let filename = '';
         if (line.startsWith('include::') && line.endsWith('[]')) { // asciidoc syntax
-            filename = line.split(':')[2].replace('[]','');
+            filename = line.split(':')[2].replace('[]', '');
         }
         else if (line.startsWith('!INCLUDE ')) { // markdown-pp syntax
-            filename = line.replace('!INCLUDE ','');
+            filename = line.replace('!INCLUDE ', '');
         }
         if (filename) {
-            if (options.source) filename = path.resolve(path.dirname(options.source),filename);
-            let s = safeReadFileSync(filename,'utf8');
+            if (options.source) filename = path.resolve(path.dirname(options.source), filename);
+            let s = safeReadFileSync(filename, 'utf8');
             let include = s.split('\r').join('').split('\n');
-            lines.splice(l,1,...include);
+            lines.splice(l, 1, ...include);
         }
         else lines[l] = line;
     }
@@ -193,21 +193,23 @@ function clean(s) {
     if (!s) return '';
     if (globalOptions.unsafe) return s;
     let sanitizeOptions = {
-        allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'h1', 'h2', 'img', 'aside', 'article', 'details',
-            'summary', 'abbr', 'meta', 'link' ]),
-        allowedAttributes: { a: [ 'href', 'id', 'name', 'target', 'class' ], img: [ 'src', 'alt', 'class' ] , aside: [ 'class' ],
-            abbr: [ 'title', 'class' ], details: [ 'open', 'class' ], div: [ 'class' ], meta: [ 'name', 'content' ],
-            link: [ 'rel', 'href', 'type', 'sizes' ],
-            h1: [ 'id' ], h2: [ 'id' ], h3: [ 'id' ], h4: [ 'id' ], h5: [ 'id' ], h6: [ 'id' ]}
+        allowedTags: sanitizeHtml.defaults.allowedTags.concat(['h1', 'h2', 'img', 'aside', 'article', 'details',
+            'summary', 'abbr', 'meta', 'link']),
+        allowedAttributes: {
+            a: ['href', 'id', 'name', 'target', 'class'], img: ['src', 'alt', 'class'], aside: ['class'],
+            abbr: ['title', 'class'], details: ['open', 'class'], div: ['class'], meta: ['name', 'content'],
+            link: ['rel', 'href', 'type', 'sizes'],
+            h1: ['id'], h2: ['id'], h3: ['id'], h4: ['id'], h5: ['id'], h6: ['id']
+        }
     };
     // replace things which look like tags which sanitizeHtml will eat
     s = s.split('\n>').join('\n$1$');
     s = s.split('>=').join('$2$');
     s = s.split('<=').join('$3$');
     let a = s.split('```');
-    for (let i=0;i<a.length;i++) {
+    for (let i = 0; i < a.length; i++) {
         if (!a[i].startsWith('xml')) {
-            a[i] = sanitizeHtml(a[i],sanitizeOptions);
+            a[i] = sanitizeHtml(a[i], sanitizeOptions);
         }
     }
     s = a.join('```');
@@ -223,7 +225,7 @@ function clean(s) {
 }
 
 function getBase64ImageSource(imageSource, imgContent) {
-    if(!imageSource || !imgContent) return "";
+    if (!imageSource || !imgContent) return "";
 
     var mimeType = getMimeType(imageSource);
     return "data:" + mimeType + ";base64," + Buffer.from(imgContent).toString('base64');
@@ -231,7 +233,7 @@ function getBase64ImageSource(imageSource, imgContent) {
 
 function getMimeType(imageSource) {
     var extension = path.extname(imageSource).toLowerCase();
-    switch(extension) {
+    switch (extension) {
         case ".svg":
             return "image/svg+xml";
         case ".webp":
@@ -276,9 +278,9 @@ function render(inputStr, options, callback) {
         hljs.registerLanguage('shell', function (hljs) { return sh; });
         hljs.registerLanguage('sh', function (hljs) { return sh; });
 
-        while (inputArr.length<3) inputArr.push('');
+        while (inputArr.length < 3) inputArr.push('');
 
-        var content = preProcess(inputArr[2],options);
+        var content = preProcess(inputArr[2], options);
         content = md.render(clean(content));
         content = postProcess(content);
 
@@ -286,12 +288,12 @@ function render(inputStr, options, callback) {
         locals.current_page = {};
         locals.current_page.data = header;
         locals.page_content = content;
-        locals.toc_data = function(content) {
+        locals.toc_data = function (content) {
             var $ = cheerio.load(content);
             var result = [];
-            var h1,h2,h3,h4,h5;
+            var h1, h2, h3, h4, h5;
             var headingLevel = header.headingLevel || 2;
-            $(':header').each(function(e){
+            $(':header').each(function (e) {
                 var tag = $(this).get(0).tagName.toLowerCase();
                 var entry = {};
                 if (tag === 'h1') {
@@ -349,7 +351,7 @@ function render(inputStr, options, callback) {
                 var imgContent = safeReadFileSync(path.join(__dirname, imageSource));
                 imageSource = getBase64ImageSource(imageSource, imgContent);
             }
-            return '<img src="'+imageSource+'" class="' + className + '" alt="' + altText + '">';
+            return '<img src="' + imageSource + '" class="' + className + '" alt="' + altText + '">';
         };
         locals.logo_image_tag = function () {
             if (!globalOptions.logo) return locals.image_tag('logo.png', 'Logo', 'logo');
@@ -367,6 +369,14 @@ function render(inputStr, options, callback) {
                 html = '<a href="' + md.utils.escapeHtml(globalOptions['logo-url']) + '">' + html + '</a>';
             }
             return html;
+        };
+        locals.favicon = function () {
+            var imageSource = "source/images/favicon.ico";
+            if (globalOptions.inline) {
+                var imgContent = safeReadFileSync(path.join(__dirname, imageSource));
+                imageSource = getBase64ImageSource(imageSource, imgContent);
+            }
+            return '<link rel="icon" type="image/x-icon" class="js-site-favicon" href="' + imageSource + '"></link>';
         };
         locals.stylesheet_link_tag = stylesheet_link_tag;
         locals.javascript_include_tag = javascript_include_tag;

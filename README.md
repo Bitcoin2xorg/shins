@@ -1,5 +1,14 @@
 # shins
 
+## eToroX documentations
+
+so you want pretty api documentation well you came to the right place!
+
+run the following command: node node_modules/widdershins/widdershins https://api-dev.etorox.io/api/v2/swagger --outfile=source/try.html.md --verbose -e .widdershins.json
+
+with the file or url that contain the swagger json and just run shins
+
+
 ### Shins Is Not Slate
 
 Beautiful static documentation for your API.
